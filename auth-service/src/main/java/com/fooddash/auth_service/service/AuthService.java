@@ -19,6 +19,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 
 import lombok.RequiredArgsConstructor;
 import com.fooddash.auth_service.entity.User;
+import com.fooddash.auth_service.exception.InvalidPassword;
+import com.fooddash.auth_service.exception.UserAlreadyExists;
+import com.fooddash.auth_service.exception.UserNotFound;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class AuthService {
     public UUID register(RegisterRequest req) {
 
         if (userRepo.existsByEmail(req.getEmail()))
-            throw new RuntimeException("Email exists");
+            throw new UserAlreadyExists("Email Already exists");
 
         User user = new User();
         user.setId(UUID.randomUUID());
@@ -49,10 +52,10 @@ public class AuthService {
     public AuthResponse login(LoginRequest req) throws Exception {
 
         User user = userRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFound("User not found"));
 
         if (!encoder.matches(req.getPassword(), user.getPasswordHash()))
-            throw new RuntimeException("Invalid password");
+            throw new InvalidPassword("Invalid password");
 
         String access = jwtService.generateAccessToken(user);
         String refresh = jwtService.generateRefreshToken(user);
