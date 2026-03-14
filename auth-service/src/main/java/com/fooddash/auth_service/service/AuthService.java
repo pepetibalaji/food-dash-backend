@@ -19,7 +19,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 
 import lombok.RequiredArgsConstructor;
 import com.fooddash.auth_service.entity.User;
+import com.fooddash.auth_service.exception.ExpiredRefresh;
 import com.fooddash.auth_service.exception.InvalidPassword;
+import com.fooddash.auth_service.exception.InvalidRefresh;
 import com.fooddash.auth_service.exception.UserAlreadyExists;
 import com.fooddash.auth_service.exception.UserNotFound;
 
@@ -72,10 +74,10 @@ public class AuthService {
     public AuthResponse refresh(String refreshToken) throws Exception {
 
         RefreshToken token = refreshRepo.findByToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh"));
+                .orElseThrow(() -> new InvalidRefresh("Invalid refresh"));
 
         if (token.getExpiresAt().isBefore(Instant.now()))
-            throw new RuntimeException("Expired refresh");
+            throw new ExpiredRefresh("Expired refresh");
 
         User user = userRepo.findById(token.getUserId()).orElseThrow();
 

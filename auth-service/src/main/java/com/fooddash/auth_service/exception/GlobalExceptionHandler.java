@@ -22,4 +22,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> InvalidPassword(InvalidPassword ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
+
+    @ExceptionHandler(InvalidRefresh.class)
+    public ResponseEntity<String> InvalidRefresh(InvalidRefresh ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ExpiredRefresh.class)
+    public ResponseEntity<String> ExpiredRefresh(ExpiredRefresh ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }
