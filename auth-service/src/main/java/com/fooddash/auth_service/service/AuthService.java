@@ -39,7 +39,6 @@ public class AuthService {
             throw new UserAlreadyExists("Email Already exists");
 
         User user = new User();
-        user.setId(UUID.randomUUID());
         user.setEmail(req.getEmail());
         user.setPasswordHash(encoder.encode(req.getPassword()));
         user.setRole(req.getRole());
