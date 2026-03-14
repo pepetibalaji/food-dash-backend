@@ -20,11 +20,12 @@ public class RefreshToken {
 
     @Id
     private UUID id;
-
+    @Column(nullable = false)
     private UUID userId;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String token;
-
+    
+    @Column(nullable = false)
     private Instant expiresAt;
 }

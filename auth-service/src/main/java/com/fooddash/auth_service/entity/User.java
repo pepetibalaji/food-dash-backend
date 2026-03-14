@@ -3,10 +3,7 @@ package com.fooddash.auth_service.entity;
 import java.time.Instant;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -20,11 +17,24 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password_hash")
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(nullable = false)
     private String role;
-    private Boolean isActive = true;
 
-    private Instant createdAt = Instant.now();
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @PrePersist
+public void prePersist() {
+    if (this.id == null) {
+        this.id = UUID.randomUUID();
+    }
+    this.createdAt = Instant.now();
+    this.isActive = true;
+}
 }
